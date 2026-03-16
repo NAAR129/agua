@@ -3,31 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulación matemática premium - Vasos y gráficas</title>
+  <title>Llenado del recipiente</title>
   <style>
     :root{
-      --bg-1:#edf4ff;
-      --bg-2:#e7eefb;
+      --bg-1:#eef5ff;
+      --bg-2:#e7effb;
+      --border:#d8e4f1;
+      --grid:rgba(75,105,140,.10);
 
-      --border:#d9e5f2;
-      --grid:rgba(74,108,145,.09);
+      --text:#17324a;
+      --muted:#6f8398;
+      --title:#234968;
 
-      --text:#16324a;
-      --muted:#708399;
-      --title:#21496f;
-
-      --blue-1:#ccecff;
-      --blue-2:#86c9ff;
-      --blue-3:#3388eb;
+      --blue-1:#a6d9ff;
+      --blue-2:#67b4ff;
+      --blue-3:#2f87eb;
       --blue-4:#1f67ca;
 
       --violet:#7c5cff;
-      --pink:#ef5b76;
+      --pink:#ef5d76;
+      --green:#18a463;
 
-      --shadow-xl:0 26px 72px rgba(33, 67, 105, .14);
-      --shadow-md:0 8px 18px rgba(33, 67, 105, .08);
-
-      --radius-xl:26px;
+      --shadow-xl:0 24px 64px rgba(31,62,100,.14);
+      --shadow-md:0 8px 18px rgba(31,62,100,.08);
+      --radius-xl:24px;
     }
 
     *{ box-sizing:border-box; }
@@ -37,46 +36,38 @@
       font-family: Inter, "Segoe UI", Arial, sans-serif;
       color:var(--text);
       background:
-        radial-gradient(900px 420px at 5% 0%, rgba(124,92,255,.10), transparent 60%),
-        radial-gradient(900px 420px at 100% 0%, rgba(51,136,235,.10), transparent 60%),
+        radial-gradient(900px 420px at 8% 0%, rgba(124,92,255,.08), transparent 60%),
+        radial-gradient(900px 420px at 100% 0%, rgba(47,135,235,.08), transparent 60%),
         linear-gradient(180deg, var(--bg-1), var(--bg-2));
     }
 
     .app{
-      max-width: 1540px;
-      margin: 18px auto;
-      background: rgba(255,255,255,.46);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,.76);
-      box-shadow: var(--shadow-xl);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
+      max-width:1540px;
+      margin:18px auto;
+      background:rgba(255,255,255,.48);
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.78);
+      box-shadow:var(--shadow-xl);
+      border-radius:var(--radius-xl);
+      overflow:hidden;
     }
 
     .header{
-      padding: 18px 22px 14px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(248,251,255,.95));
+      padding:18px 22px 14px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(248,251,255,.95));
     }
 
     .titleBlock h1{
       margin:0;
-      font-size:25px;
+      font-size:26px;
       font-weight:900;
       color:var(--title);
       letter-spacing:.2px;
     }
 
-    .titleBlock p{
-      margin:8px 0 0;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-      max-width: 980px;
-    }
-
     .activityBar{
-      margin-top:16px;
+      margin-top:18px;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -84,44 +75,44 @@
 
     .activityBtn{
       border:none;
-      background: linear-gradient(180deg, #ffffff, #f4f8ff);
+      background:linear-gradient(180deg, #ffffff, #f4f8ff);
       border:1px solid #dbe6f3;
       color:#3a5876;
       padding:10px 16px;
       border-radius:999px;
       font-weight:900;
-      font-size:14px;
+      font-size:15px;
       cursor:pointer;
-      box-shadow: 0 4px 12px rgba(35,73,104,.05);
+      box-shadow:0 4px 12px rgba(35,73,104,.05);
       transition:.14s ease;
     }
 
-    .activityBtn:hover{ transform: translateY(-1px); }
+    .activityBtn:hover{ transform:translateY(-1px); }
 
     .activityBtn.active{
-      background: linear-gradient(180deg, #5b95ff, #307ee8);
+      background:linear-gradient(180deg, #5b95ff, #307ee8);
       color:#fff;
-      border-color: transparent;
-      box-shadow: 0 12px 24px rgba(48,126,232,.28);
+      border-color:transparent;
+      box-shadow:0 12px 24px rgba(48,126,232,.28);
     }
 
     .topWrap{
-      position: relative;
-      overflow-x: auto;
-      background: linear-gradient(180deg, rgba(255,255,255,.46), rgba(247,250,255,.96));
+      position:relative;
+      overflow-x:auto;
+      background:linear-gradient(180deg, rgba(255,255,255,.46), rgba(247,250,255,.96));
     }
 
     .top{
-      min-width: 1240px;
+      min-width:1240px;
       display:grid;
-      grid-template-columns: 530px 1fr;
+      grid-template-columns:530px 1fr;
       align-items:stretch;
     }
 
     .panel{
       position:relative;
       min-height:700px;
-      background: linear-gradient(180deg, rgba(255,255,255,.60), rgba(249,252,255,.97));
+      background:linear-gradient(180deg, rgba(255,255,255,.60), rgba(249,252,255,.97));
     }
 
     .panel + .panel{
@@ -141,7 +132,7 @@
     .panelInner{
       height:700px;
       padding:56px 18px 18px;
-      position: relative;
+      position:relative;
     }
 
     svg, canvas{
@@ -160,15 +151,15 @@
     #drawCanvas{
       position:absolute;
       inset:56px 18px 18px 18px;
-      width: calc(100% - 36px);
-      height: calc(100% - 74px);
+      width:calc(100% - 36px);
+      height:calc(100% - 74px);
       display:none;
       z-index:6;
       border-radius:18px;
-      cursor: crosshair;
-      touch-action: none;
-      -webkit-user-select: none;
-      user-select: none;
+      cursor:crosshair;
+      touch-action:none;
+      -webkit-user-select:none;
+      user-select:none;
     }
 
     .drawTools{
@@ -181,44 +172,52 @@
       flex-wrap:wrap;
     }
 
-    .drawTools.show{
-      display:flex;
-    }
+    .drawTools.show{ display:flex; }
 
     .miniBtn{
       border:none;
       border-radius:999px;
       padding:8px 12px;
-      background: linear-gradient(180deg, #ffffff, #f4f8ff);
+      background:linear-gradient(180deg, #ffffff, #f4f8ff);
       border:1px solid #dbe6f3;
       color:#315171;
       font-size:13px;
       font-weight:900;
       cursor:pointer;
-      box-shadow: 0 4px 10px rgba(35,73,104,.05);
+      box-shadow:0 4px 10px rgba(35,73,104,.05);
     }
 
     .miniBtn.primary{
-      background: linear-gradient(180deg, #5b95ff, #307ee8);
+      background:linear-gradient(180deg, #5b95ff, #307ee8);
       color:#fff;
-      border-color: transparent;
+      border-color:transparent;
     }
 
     .miniBtn.warn{
-      background: linear-gradient(180deg, #ff8aa0, #eb5b71);
+      background:linear-gradient(180deg, #ff8aa0, #eb5b71);
       color:#fff;
-      border-color: transparent;
+      border-color:transparent;
+    }
+
+    .miniBtn.success{
+      background:linear-gradient(180deg, #39c785, #18985d);
+      color:#fff;
+      border-color:transparent;
     }
 
     .controls{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns:1fr 1fr;
       border-top:1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(247,250,255,.99));
+      background:linear-gradient(180deg, rgba(255,255,255,.90), rgba(247,250,255,.99));
+    }
+
+    .controls.hidden{
+      display:none;
     }
 
     .controlBlock{
-      padding: 28px 32px;
+      padding:28px 32px;
     }
 
     .controlBlock + .controlBlock{
@@ -249,19 +248,24 @@
 
     input[type="range"]{
       width:300px;
-      accent-color: var(--blue-3);
+      accent-color:var(--blue-3);
     }
 
-    input[type="number"]{
-      width:115px;
+    input[type="number"], select{
+      width:180px;
       padding:12px 14px;
       border-radius:16px;
       border:1px solid #cedae8;
       background:#fff;
-      font-size:18px;
+      font-size:16px;
       color:var(--text);
-      box-shadow: inset 0 1px 3px rgba(0,0,0,.04);
+      box-shadow:inset 0 1px 3px rgba(0,0,0,.04);
       outline:none;
+    }
+
+    input[type="number"]{
+      width:115px;
+      font-size:18px;
     }
 
     .btnRow{
@@ -280,14 +284,14 @@
       font-size:16px;
       font-weight:900;
       transition:transform .12s ease;
-      box-shadow: var(--shadow-md);
+      box-shadow:var(--shadow-md);
     }
 
     button.action:hover{ transform:translateY(-1px); }
 
-    .btnBlue{ background: linear-gradient(180deg, #5aafff, #2a81e8); }
-    .btnGray{ background: linear-gradient(180deg, #9aa7b4, #778493); }
-    .btnRed{ background: linear-gradient(180deg, #ff8aa0, #eb5b71); }
+    .btnBlue{ background:linear-gradient(180deg, #5aafff, #2a81e8); }
+    .btnGray{ background:linear-gradient(180deg, #9aa7b4, #778493); }
+    .btnRed{ background:linear-gradient(180deg, #ff8aa0, #eb5b71); }
 
     .checks{
       display:flex;
@@ -320,41 +324,35 @@
       color:var(--title);
     }
 
-    .formula{
-      margin-top:14px;
-      display:inline-block;
-      padding:12px 16px;
-      border-radius:16px;
-      background: linear-gradient(180deg, #f7faff, #edf4ff);
-      border:1px solid #dbe7f5;
-      color:#2d557c;
-      font-size:15px;
-      font-weight:900;
-      box-shadow: 0 4px 10px rgba(40,87,140,.05);
-    }
-
-    .note{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.48;
-      max-width: 670px;
-    }
-
-    .unitNote{
-      margin-top:8px;
-      color:#7b6fe3;
-      font-size:13px;
+    .challengeBox{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:linear-gradient(180deg, #f7fbff, #eef5ff);
+      border:1px solid #dce8f5;
+      color:#294d70;
       font-weight:800;
+      display:none;
+    }
+
+    .challengeBox.show{
+      display:block;
+    }
+
+    .score{
+      margin-top:8px;
+      font-size:19px;
+      font-weight:900;
+      color:var(--green);
     }
 
     .footerAuthor{
       text-align:center;
-      padding: 12px 20px 18px;
+      padding:12px 20px 18px;
       color:#3f5b76;
       font-weight:900;
       font-size:15px;
-      background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.45));
+      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.45));
       border-top:1px solid rgba(217,229,242,.7);
     }
 
@@ -362,7 +360,7 @@
       color:#1d4772;
     }
 
-    @media (max-width: 980px){
+    @media (max-width:980px){
       .controls{ grid-template-columns:1fr; }
       .controlBlock + .controlBlock{
         border-left:none;
@@ -375,19 +373,16 @@
   <div class="app">
     <div class="header">
       <div class="titleBlock">
-        <h1>Simulación matemática premium</h1>
-        <p>
-          Con caudal constante, cada forma de vaso produce una gráfica distinta de la altura del agua.
-          En la Actividad 5 el estudiante dibuja la mitad derecha de su vaso y el sistema la refleja, la ajusta y la simula.
-        </p>
+        <h1>Llenado del recipiente</h1>
       </div>
 
       <div class="activityBar">
-        <button class="activityBtn active" data-shape="cylinder">Actividad 1 · Cilíndrico</button>
-        <button class="activityBtn" data-shape="cone">Actividad 2 · Cónica</button>
-        <button class="activityBtn" data-shape="round">Actividad 3 · Redondeada</button>
-        <button class="activityBtn" data-shape="frustum">Actividad 4 · Tronco-cónica</button>
-        <button class="activityBtn" data-shape="custom">Actividad 5 · Diseña tu vaso</button>
+        <button class="activityBtn active" data-shape="cylinder">Actividad 1</button>
+        <button class="activityBtn" data-shape="cone">Actividad 2</button>
+        <button class="activityBtn" data-shape="round">Actividad 3</button>
+        <button class="activityBtn" data-shape="frustum">Actividad 4</button>
+        <button class="activityBtn" data-shape="custom">Actividad 5</button>
+        <button class="activityBtn" data-shape="reconstruct">Actividad 6</button>
       </div>
     </div>
 
@@ -396,11 +391,14 @@
 
       <div class="top">
         <section class="panel">
-          <div class="panelTitle">Vaso y regla</div>
+          <div class="panelTitle">Recipiente y regla</div>
           <div class="drawTools" id="drawTools">
             <button class="miniBtn" id="drawModeBtn">Dibujar</button>
             <button class="miniBtn warn" id="clearDrawBtn">Borrar</button>
-            <button class="miniBtn primary" id="fitDrawBtn">Ajustar vaso</button>
+            <button class="miniBtn primary" id="fitDrawBtn">Ajustar recipiente</button>
+            <button class="miniBtn success" id="compareBtn">Comparar</button>
+            <button class="miniBtn primary" id="showSolutionBtn">Mostrar vaso correcto</button>
+            <button class="miniBtn primary" id="newChallengeBtn">Nuevo reto</button>
           </div>
           <div class="panelInner">
             <svg id="leftSvg" viewBox="0 0 520 640"></svg>
@@ -409,7 +407,7 @@
         </section>
 
         <section class="panel">
-          <div class="panelTitle">Gráfico de altura</div>
+          <div class="panelTitle">Gráfico</div>
           <div class="panelInner">
             <svg id="rightSvg" viewBox="0 0 800 640" preserveAspectRatio="none"></svg>
           </div>
@@ -417,16 +415,16 @@
       </div>
     </div>
 
-    <div class="controls">
+    <div class="controls" id="controls">
       <div class="controlBlock">
         <div class="row">
-          <label for="widthSlider">Ancho característico del vaso</label>
+          <label for="widthSlider">Ancho característico del recipiente</label>
           <input id="widthSlider" type="range" min="2.2" max="5.5" step="0.1" value="3.0">
           <span class="value" id="widthValue">3.0 cm</span>
         </div>
 
         <div class="row">
-          <label for="heightSlider">Altura máxima del vaso</label>
+          <label for="heightSlider">Altura máxima del recipiente</label>
           <input id="heightSlider" type="range" min="6" max="18" step="0.5" value="10.5">
           <span class="value" id="heightMaxValue">10.5 cm</span>
         </div>
@@ -439,11 +437,11 @@
 
         <div class="info" id="timeInfo">Tiempo = 0.0 s</div>
         <div class="info2" id="heightInfo">Altura = 0.0 cm</div>
-        <div class="formula" id="formulaInfo">Modelo: simulación numérica con caudal constante</div>
-        <div class="note" id="shapeNote">
-          En el vaso cilíndrico, el área transversal es constante y la gráfica de la altura es lineal.
+
+        <div class="challengeBox" id="challengeBox">
+          <div id="challengeText">Reto activo</div>
+          <div class="score" id="scoreText"></div>
         </div>
-        <div class="unitNote">Recordatorio didáctico: 1 mL = 1 cm³</div>
       </div>
 
       <div class="controlBlock">
@@ -465,6 +463,14 @@
           <span class="value" id="speedValue">1.00×</span>
         </div>
 
+        <div class="row">
+          <label for="graphMode">Modo de gráfico</label>
+          <select id="graphMode">
+            <option value="timeHeight">Altura vs tiempo</option>
+            <option value="volumeHeight">Contenido vs altura</option>
+          </select>
+        </div>
+
         <div class="checks">
           <label><input id="showPoints" type="checkbox" checked> Puntos</label>
           <label><input id="showLine" type="checkbox" checked> Gráfico</label>
@@ -483,12 +489,10 @@
 
     const SHAPES = {
       cylinder: {
-        note: "En el vaso cilíndrico, el área transversal es constante y la gráfica de la altura es lineal.",
         profile(h, H, w){ return w; },
         decoration: "none"
       },
       cone: {
-        note: "En la copa cónica, el radio aumenta con la altura. Por eso la altura sube rápido al inicio y luego más lentamente.",
         profile(h, H, w){
           const u = h / Math.max(H, 0.0001);
           return w * (0.12 + 0.88 * u);
@@ -496,7 +500,6 @@
         decoration: "stem"
       },
       round: {
-        note: "En la copa redondeada, el área cambia de forma no uniforme. La gráfica de h(t) deja de ser lineal y refleja ese cambio.",
         profile(h, H, w){
           const u = h / Math.max(H, 0.0001);
           const bulb = 0.28 + 0.82 * Math.sin(Math.PI * u) ** 0.9;
@@ -506,7 +509,6 @@
         decoration: "stem"
       },
       frustum: {
-        note: "En la copa tronco-cónica, la sección transversal disminuye hacia arriba, así que la altura crece cada vez más rápido.",
         profile(h, H, w){
           const u = h / Math.max(H, 0.0001);
           return w * (1.00 - 0.38 * u);
@@ -514,14 +516,49 @@
         decoration: "stem"
       },
       custom: {
-        note: "Dibuja solo la mitad derecha del vaso en la zona punteada y presiona “Ajustar vaso”. El sistema la reflejará automáticamente.",
+        profile(h, H, w){ return w; },
+        decoration: "none"
+      },
+      reconstruct: {
         profile(h, H, w){ return w; },
         decoration: "none"
       }
     };
 
+    const CHALLENGES = [
+      {
+        name: "Reto 1",
+        H: 10.5,
+        width: 3.1,
+        profile(h, H, w){
+          const u = h / H;
+          return w * (0.20 + 0.80 * u);
+        }
+      },
+      {
+        name: "Reto 2",
+        H: 10.5,
+        width: 3.3,
+        profile(h, H, w){
+          const u = h / H;
+          return w * (1.00 - 0.42 * u);
+        }
+      },
+      {
+        name: "Reto 3",
+        H: 10.5,
+        width: 3.0,
+        profile(h, H, w){
+          const u = h / H;
+          const bulb = 0.36 + 0.78 * Math.sin(Math.PI * u) ** 0.95;
+          return w * Math.max(0.22, bulb);
+        }
+      }
+    ];
+
     const state = {
       shape: "cylinder",
+      graphMode: "timeHeight",
       t: 0,
       h: 0,
       h0: 0,
@@ -540,14 +577,19 @@
       customRadiiCm: [],
       customWidthCm: null,
       customBaseMaxRadiusCm: null,
-
-      // nueva escala visual fija para que el ancho sí se vea en el dibujo
       customVisualMaxRadiusCm: null,
 
       draw: {
         enabled: false,
         isDrawing: false,
         points: []
+      },
+
+      challenge: {
+        index: 0,
+        profile: null,
+        score: null,
+        showSolution: false
       }
     };
 
@@ -562,12 +604,18 @@
       drawModeBtn: document.getElementById("drawModeBtn"),
       clearDrawBtn: document.getElementById("clearDrawBtn"),
       fitDrawBtn: document.getElementById("fitDrawBtn"),
+      compareBtn: document.getElementById("compareBtn"),
+      showSolutionBtn: document.getElementById("showSolutionBtn"),
+      newChallengeBtn: document.getElementById("newChallengeBtn"),
+
+      controls: document.getElementById("controls"),
 
       widthSlider: document.getElementById("widthSlider"),
       heightSlider: document.getElementById("heightSlider"),
       initialHeight: document.getElementById("initialHeight"),
       flowSlider: document.getElementById("flowSlider"),
       speedSlider: document.getElementById("speedSlider"),
+      graphMode: document.getElementById("graphMode"),
 
       widthValue: document.getElementById("widthValue"),
       heightMaxValue: document.getElementById("heightMaxValue"),
@@ -576,8 +624,10 @@
 
       timeInfo: document.getElementById("timeInfo"),
       heightInfo: document.getElementById("heightInfo"),
-      formulaInfo: document.getElementById("formulaInfo"),
-      shapeNote: document.getElementById("shapeNote"),
+
+      challengeBox: document.getElementById("challengeBox"),
+      challengeText: document.getElementById("challengeText"),
+      scoreText: document.getElementById("scoreText"),
 
       showPoints: document.getElementById("showPoints"),
       showLine: document.getElementById("showLine"),
@@ -649,21 +699,21 @@
       return RIGHT.plotBottom - (h / H) * usable;
     }
 
-    function getXMax(){
-      const estimated = estimateFillTime();
-      return Math.max(12, Math.min(120, Math.ceil(estimated * 1.20)));
-    }
-
-    function xFromT(t){
-      const xMax = getXMax();
-      const usable = RIGHT.svgW - RIGHT.plotLeft - RIGHT.plotRight;
-      return RIGHT.plotLeft + (t / xMax) * usable;
-    }
-
     function majorStepY(){
       if (state.H > 16) return 3;
       if (state.H > 12) return 2;
       return 1;
+    }
+
+    function isUserDrawMode(){
+      return state.shape === "custom" || state.shape === "reconstruct";
+    }
+
+    function activeProfile(h, H, w){
+      if (state.shape === "reconstruct" && state.challenge.profile) {
+        return state.challenge.profile(h, H, w);
+      }
+      return SHAPES[state.shape].profile(h, H, w);
     }
 
     function rebuildCustomProfileFromWidth(){
@@ -684,10 +734,17 @@
     }
 
     function sampleShapeRadiusCm(h){
-      if (state.shape === "custom" && state.customProfileReady) {
+      if ((state.shape === "custom" || state.shape === "reconstruct") && state.customProfileReady) {
         return customRadiusCm(h);
       }
-      return SHAPES[state.shape].profile(h, state.H, state.width);
+      return activeProfile(h, state.H, state.width);
+    }
+
+    function targetRadiusCm(h){
+      if (state.challenge.profile) {
+        return state.challenge.profile(h, state.H, state.width);
+      }
+      return sampleShapeRadiusCm(h);
     }
 
     function areaAtH(h){
@@ -695,22 +752,15 @@
       return Math.PI * r * r;
     }
 
-    function estimateFillTime(){
-      const steps = 220;
-      const dh = state.H / steps;
-      let volume = 0;
-      for (let i = 0; i < steps; i++) {
-        const hMid = (i + 0.5) * dh;
-        volume += areaAtH(hMid) * dh;
-      }
-      return Math.max(4, (volume - initialVolume()) / Math.max(state.Q, 0.0001));
+    function targetAreaAtH(h){
+      const r = Math.max(0.08, targetRadiusCm(h));
+      return Math.PI * r * r;
     }
 
-    function initialVolume(){
-      const h0 = state.h0;
-      if (h0 <= 0.0001) return 0;
-      const steps = 180;
-      const dh = h0 / steps;
+    function volumeAtHeight(h){
+      if (h <= 0) return 0;
+      const steps = 220;
+      const dh = h / steps;
       let volume = 0;
       for (let i = 0; i < steps; i++) {
         const hMid = (i + 0.5) * dh;
@@ -719,15 +769,86 @@
       return volume;
     }
 
+    function targetVolumeAtHeight(h){
+      if (h <= 0) return 0;
+      const steps = 220;
+      const dh = h / steps;
+      let volume = 0;
+      for (let i = 0; i < steps; i++) {
+        const hMid = (i + 0.5) * dh;
+        volume += targetAreaAtH(hMid) * dh;
+      }
+      return volume;
+    }
+
+    function totalVolume(){
+      return volumeAtHeight(state.H);
+    }
+
+    function targetTotalVolume(){
+      return targetVolumeAtHeight(state.H);
+    }
+
+    function estimateFillTime(){
+      return Math.max(4, (totalVolume() - volumeAtHeight(state.h0)) / Math.max(state.Q, 0.0001));
+    }
+
+    function challengeFillHistory(){
+      if (!state.challenge.profile) return [];
+      const history = [];
+      let t = 0;
+      let h = 0;
+      const dt = 0.05;
+      history.push({ t:0, h:0 });
+      while (h < state.H - 1e-6 && t < 200) {
+        const A = targetAreaAtH(h);
+        h = Math.min(state.H, h + (state.Q / Math.max(A, 0.02)) * dt);
+        t += dt;
+        history.push({ t, h });
+      }
+      return history;
+    }
+
+    function graphXMax(){
+      if (state.shape === "reconstruct") {
+        const hist = challengeFillHistory();
+        if (state.graphMode === "timeHeight") {
+          return Math.max(12, Math.ceil((hist[hist.length - 1]?.t || 12) * 1.12));
+        }
+        return Math.max(50, Math.ceil(targetTotalVolume() * 1.12));
+      }
+
+      if (state.graphMode === "timeHeight") {
+        return Math.max(12, Math.min(120, Math.ceil(estimateFillTime() * 1.20)));
+      }
+      return Math.max(50, Math.ceil(totalVolume() * 1.12));
+    }
+
+    function graphXFromValue(xValue){
+      const xMax = graphXMax();
+      const usable = RIGHT.svgW - RIGHT.plotLeft - RIGHT.plotRight;
+      return RIGHT.plotLeft + (xValue / xMax) * usable;
+    }
+
+    function graphXValueFromPoint(p){
+      return state.graphMode === "timeHeight" ? p.t : volumeAtHeight(p.h);
+    }
+
     function vesselRadiusPx(h){
       let maxPx = 92;
       let maxCm = 5.5;
 
-      if (state.shape === "custom" && state.customProfileReady) {
+      if ((state.shape === "custom" || state.shape === "reconstruct") && state.customProfileReady) {
         maxPx = 128;
         maxCm = Math.max(state.customVisualMaxRadiusCm || state.customWidthCm || 0.5, 0.5);
       }
       return sampleShapeRadiusCm(h) / maxCm * maxPx;
+    }
+
+    function targetRadiusPx(h){
+      let maxPx = 128;
+      let maxCm = Math.max(state.customVisualMaxRadiusCm || state.width || 0.5, 0.5);
+      return targetRadiusCm(h) / maxCm * maxPx;
     }
 
     function pointsForWall(samples = 64){
@@ -737,6 +858,19 @@
         const h = state.H * (i / samples);
         const y = yFromH(h);
         const r = vesselRadiusPx(h);
+        left.push([LEFT.centerX - r, y]);
+        right.push([LEFT.centerX + r, y]);
+      }
+      return { left, right };
+    }
+
+    function pointsForTargetWall(samples = 64){
+      const left = [];
+      const right = [];
+      for (let i = 0; i <= samples; i++) {
+        const h = state.H * (i / samples);
+        const y = yFromH(h);
+        const r = targetRadiusPx(h);
         left.push([LEFT.centerX - r, y]);
         right.push([LEFT.centerX + r, y]);
       }
@@ -822,24 +956,17 @@
       const stemBottomY = 592;
 
       svg.appendChild(S("line", {
-        x1: LEFT.centerX,
-        x2: LEFT.centerX,
-        y1: stemTopY,
-        y2: stemBottomY - 24,
-        stroke: "#50677c",
-        "stroke-width": "4",
-        "stroke-linecap": "round",
-        opacity: ".85"
+        x1: LEFT.centerX, x2: LEFT.centerX,
+        y1: stemTopY, y2: stemBottomY - 24,
+        stroke: "#50677c", "stroke-width": "4",
+        "stroke-linecap": "round", opacity: ".85"
       }));
 
       svg.appendChild(S("ellipse", {
-        cx: LEFT.centerX,
-        cy: stemBottomY - 8,
-        rx: 48,
-        ry: 9,
+        cx: LEFT.centerX, cy: stemBottomY - 8,
+        rx: 48, ry: 9,
         fill: "rgba(255,255,255,.55)",
-        stroke: "#50677c",
-        "stroke-width": "3",
+        stroke: "#50677c", "stroke-width": "3",
         opacity: ".9"
       }));
     }
@@ -850,10 +977,8 @@
 
       svg.appendChild(S("rect", {
         x, y: LEFT.innerTop - 10, width: w, height: (LEFT.innerBottom - LEFT.innerTop) + 20,
-        rx: 18,
-        fill: "url(#rulerFill)",
-        stroke: "#d2dfeb",
-        "stroke-width": "1.5"
+        rx: 18, fill: "url(#rulerFill)",
+        stroke: "#d2dfeb", "stroke-width": "1.5"
       }));
 
       const maj = majorStepY();
@@ -864,10 +989,8 @@
         const isMajor = Math.abs((v / maj) - Math.round(v / maj)) < 0.001;
 
         svg.appendChild(S("line", {
-          x1: x + 16,
-          x2: x + (isMajor ? 42 : 28),
-          y1: y,
-          y2: y,
+          x1: x + 16, x2: x + (isMajor ? 42 : 28),
+          y1: y, y2: y,
           stroke: isMajor ? "#536a7f" : "#9bb0c4",
           "stroke-width": isMajor ? "2.1" : "1.2",
           "stroke-linecap": "round"
@@ -875,10 +998,8 @@
 
         if (isMajor) {
           svg.appendChild(S("text", {
-            x: x + 49,
-            y: y + 5,
-            fill: "#334b61",
-            "font-size": "16",
+            x: x + 49, y: y + 5,
+            fill: "#334b61", "font-size": "16",
             "font-weight": "900"
           }, Number.isInteger(v) ? String(v) : v.toFixed(1)));
         }
@@ -892,65 +1013,97 @@
 
       svg.appendChild(S("rect", {
         x, y, width: 132, height: 42, rx: 21,
-        fill: "rgba(242,248,255,.98)",
-        stroke: "#d6e8fb"
+        fill: "rgba(242,248,255,.98)", stroke: "#d6e8fb"
       }));
 
       svg.appendChild(S("text", {
-        x: x + 20,
-        y: y + 27,
-        fill: "#1f67ca",
-        "font-size": "17",
+        x: x + 20, y: y + 27,
+        fill: "#1f67ca", "font-size": "17",
         "font-weight": "900"
       }, text));
     }
 
-    function drawCustomEmptyStage(){
+    function drawChallengeEmptyStage(){
       clear(UI.leftSvg);
       makeDefs(UI.leftSvg);
-
       drawRuler(UI.leftSvg);
       drawHeightChip(UI.leftSvg);
 
       UI.leftSvg.appendChild(S("ellipse", {
-        cx: LEFT.centerX,
-        cy: 590,
-        rx: 70,
-        ry: 12,
+        cx: LEFT.centerX, cy: 590, rx: 70, ry: 12,
         fill: "rgba(98,126,157,.08)"
       }));
 
       UI.leftSvg.appendChild(S("rect", {
-        x: 34,
-        y: 74,
-        width: 252,
-        height: 70,
-        rx: 16,
+        x: 34, y: 74, width: 270, height: 84, rx: 16,
         fill: "rgba(255,255,255,.82)",
-        stroke: "#dbe7f5",
-        "stroke-width": "1.2"
+        stroke: "#dbe7f5", "stroke-width": "1.2"
       }));
 
       UI.leftSvg.appendChild(S("text", {
-        x: 48,
-        y: 100,
-        fill: "#58718b",
-        "font-size": "14",
-        "font-weight": "800"
-      }, "Dibuja solo la mitad derecha del vaso."));
+        x: 48, y: 100, fill: "#58718b",
+        "font-size": "14", "font-weight": "800"
+      }, "Observa la gráfica objetivo de la derecha."));
 
       UI.leftSvg.appendChild(S("text", {
-        x: 48,
-        y: 121,
-        fill: "#6d5ef5",
-        "font-size": "13",
+        x: 48, y: 121, fill: "#58718b",
+        "font-size": "14", "font-weight": "800"
+      }, "Dibuja el recipiente y pulsa “Comparar”."));
+    }
+
+    function drawEmptyUserStage(){
+      if (state.shape === "reconstruct") {
+        drawChallengeEmptyStage();
+        return;
+      }
+
+      clear(UI.leftSvg);
+      makeDefs(UI.leftSvg);
+      drawRuler(UI.leftSvg);
+      drawHeightChip(UI.leftSvg);
+
+      UI.leftSvg.appendChild(S("ellipse", {
+        cx: LEFT.centerX, cy: 590, rx: 70, ry: 12,
+        fill: "rgba(98,126,157,.08)"
+      }));
+
+      UI.leftSvg.appendChild(S("rect", {
+        x: 34, y: 74, width: 260, height: 70, rx: 16,
+        fill: "rgba(255,255,255,.82)",
+        stroke: "#dbe7f5", "stroke-width": "1.2"
+      }));
+
+      UI.leftSvg.appendChild(S("text", {
+        x: 48, y: 100,
+        fill: "#58718b", "font-size": "14",
+        "font-weight": "800"
+      }, "Dibuja solo la mitad derecha del recipiente."));
+
+      UI.leftSvg.appendChild(S("text", {
+        x: 48, y: 121,
+        fill: "#6d5ef5", "font-size": "13",
         "font-weight": "900"
-      }, "Luego presiona “Ajustar vaso”."));
+      }, "Luego presiona “Ajustar recipiente”."));
+    }
+
+    function drawCorrectTargetOutline(svg){
+      const target = pointsForTargetWall(80);
+      const targetPath = pathFromPoints(target.left, target.right);
+
+      svg.appendChild(S("path", {
+        d: targetPath,
+        fill: "none",
+        stroke: "rgba(24,164,99,.95)",
+        "stroke-width": "3.2",
+        "stroke-dasharray": "9 6",
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round"
+      }));
     }
 
     function drawLeft(){
-      if (state.shape === "custom" && !state.customProfileReady) {
-        drawCustomEmptyStage();
+      if (isUserDrawMode() && !state.customProfileReady) {
+        drawEmptyUserStage();
         return;
       }
 
@@ -961,25 +1114,19 @@
       const wallPath = pathFromPoints(walls.left, walls.right);
 
       UI.leftSvg.appendChild(S("ellipse", {
-        cx: LEFT.centerX,
-        cy: 590,
-        rx: 78,
-        ry: 14,
+        cx: LEFT.centerX, cy: 590, rx: 78, ry: 14,
         fill: "rgba(98,126,157,.10)"
       }));
 
       drawStemDecoration(UI.leftSvg);
 
       UI.leftSvg.appendChild(S("path", {
-        d: wallPath,
-        fill: "url(#glassFill)",
-        stroke: "#b5c4d2",
-        "stroke-width": "3"
+        d: wallPath, fill: "url(#glassFill)",
+        stroke: "#b5c4d2", "stroke-width": "3"
       }));
 
       UI.leftSvg.appendChild(S("path", {
-        d: wallPath,
-        fill: "none",
+        d: wallPath, fill: "none",
         stroke: "rgba(255,255,255,.52)",
         "stroke-width": "1.2",
         transform: "translate(0,-1)"
@@ -988,59 +1135,47 @@
       const topR = vesselRadiusPx(state.H);
       const topY = yFromH(state.H);
       UI.leftSvg.appendChild(S("ellipse", {
-        cx: LEFT.centerX,
-        cy: topY,
-        rx: Math.max(10, topR - 6),
-        ry: 10,
+        cx: LEFT.centerX, cy: topY,
+        rx: Math.max(10, topR - 6), ry: 10,
         fill: "rgba(255,255,255,.28)",
-        stroke: "#b4bec9",
-        "stroke-width": "2"
+        stroke: "#b4bec9", "stroke-width": "2"
       }));
 
       UI.leftSvg.appendChild(S("rect", {
-        x: LEFT.centerX - topR + 18,
-        y: topY + 18,
-        width: 16,
-        height: 380,
-        rx: 999,
-        fill: "url(#shineLeft)",
-        opacity: ".72"
+        x: LEFT.centerX - topR + 18, y: topY + 18,
+        width: 16, height: 380, rx: 999,
+        fill: "url(#shineLeft)", opacity: ".72"
       }));
+
+      if (state.shape === "reconstruct" && state.challenge.showSolution) {
+        drawCorrectTargetOutline(UI.leftSvg);
+      }
 
       const water = waterPolygonUpToHeight(state.h, 80);
       const waterPath = pathFromPoints(water.left, water.right);
 
       UI.leftSvg.appendChild(S("path", {
-        d: waterPath,
-        fill: "url(#waterFill)",
-        stroke: "none"
+        d: waterPath, fill: "url(#waterFill)", stroke: "none"
       }));
 
       UI.leftSvg.appendChild(S("path", {
-        d: waterPath,
-        fill: "url(#waterShine)",
-        opacity: ".55",
-        transform: "translate(-8,0)"
+        d: waterPath, fill: "url(#waterShine)",
+        opacity: ".55", transform: "translate(-8,0)"
       }));
 
       const waterTopR = vesselRadiusPx(state.h);
       const waterTopY = yFromH(state.h);
 
       UI.leftSvg.appendChild(S("ellipse", {
-        cx: LEFT.centerX,
-        cy: waterTopY,
-        rx: Math.max(8, waterTopR),
-        ry: 11,
+        cx: LEFT.centerX, cy: waterTopY,
+        rx: Math.max(8, waterTopR), ry: 11,
         fill: "url(#surfaceFill)",
-        stroke: "rgba(53,125,210,.46)",
-        "stroke-width": "1.5"
+        stroke: "rgba(53,125,210,.46)", "stroke-width": "1.5"
       }));
 
       UI.leftSvg.appendChild(S("ellipse", {
-        cx: LEFT.centerX,
-        cy: waterTopY - 2,
-        rx: Math.max(10, waterTopR * 0.72),
-        ry: 4.5,
+        cx: LEFT.centerX, cy: waterTopY - 2,
+        rx: Math.max(10, waterTopR * 0.72), ry: 4.5,
         fill: "rgba(255,255,255,.28)"
       }));
 
@@ -1049,15 +1184,14 @@
     }
 
     function drawGrid(){
-      const xMax = getXMax();
+      const xMax = graphXMax();
 
       for (let i = 0; i <= 10; i++) {
-        const t = (i / 10) * xMax;
+        const xVal = (i / 10) * xMax;
         UI.rightSvg.appendChild(S("line", {
-          x1: xFromT(t), x2: xFromT(t),
+          x1: graphXFromValue(xVal), x2: graphXFromValue(xVal),
           y1: RIGHT.plotTop, y2: RIGHT.plotBottom,
-          stroke: "rgba(74,108,145,.09)",
-          "stroke-width": "1"
+          stroke: "rgba(75,105,140,.10)", "stroke-width": "1"
         }));
       }
 
@@ -1065,8 +1199,7 @@
         UI.rightSvg.appendChild(S("line", {
           x1: RIGHT.plotLeft, x2: RIGHT.svgW - RIGHT.plotRight,
           y1: chartYFromH(v), y2: chartYFromH(v),
-          stroke: "rgba(74,108,145,.09)",
-          "stroke-width": "1"
+          stroke: "rgba(75,105,140,.10)", "stroke-width": "1"
         }));
       }
     }
@@ -1076,17 +1209,14 @@
       makeDefs(UI.rightSvg);
 
       UI.rightSvg.appendChild(S("rect", {
-        x: RIGHT.plotLeft - 16,
-        y: RIGHT.plotTop - 16,
+        x: RIGHT.plotLeft - 16, y: RIGHT.plotTop - 16,
         width: RIGHT.svgW - RIGHT.plotLeft - RIGHT.plotRight + 32,
         height: RIGHT.plotBottom - RIGHT.plotTop + 32,
-        rx: 22,
-        fill: "url(#graphCardFill)",
-        stroke: "#dbe7f1",
-        "stroke-width": "1.2"
+        rx: 22, fill: "url(#graphCardFill)",
+        stroke: "#dbe7f1", "stroke-width": "1.2"
       }));
 
-      const xMax = getXMax();
+      const xMax = graphXMax();
 
       if (UI.showGuides.checked) drawGrid();
 
@@ -1103,32 +1233,27 @@
       }));
 
       UI.rightSvg.appendChild(S("text", {
-        x: RIGHT.plotLeft - 8,
-        y: RIGHT.plotTop - 18,
-        fill: "#23476b",
-        "font-size": "18",
+        x: RIGHT.plotLeft - 8, y: RIGHT.plotTop - 18,
+        fill: "#23476b", "font-size": "18",
         "font-weight": "900"
       }, "Altura en cm"));
 
+      const xAxisLabel = state.graphMode === "timeHeight" ? "Tiempo en s" : "Contenido en mL";
       UI.rightSvg.appendChild(S("text", {
         x: RIGHT.svgW - RIGHT.plotRight - 2,
         y: RIGHT.plotBottom + 46,
-        fill: "#23476b",
-        "font-size": "18",
-        "font-weight": "900",
-        "text-anchor": "end"
-      }, "Tiempo en s"));
+        fill: "#23476b", "font-size": "18",
+        "font-weight": "900", "text-anchor": "end"
+      }, xAxisLabel));
 
       for (let i = 0; i <= 10; i++) {
-        const t = (i / 10) * xMax;
+        const xVal = (i / 10) * xMax;
         UI.rightSvg.appendChild(S("text", {
-          x: xFromT(t),
+          x: graphXFromValue(xVal),
           y: RIGHT.plotBottom + 30,
-          fill: "#556e85",
-          "font-size": "14",
-          "text-anchor": "middle",
-          "font-weight": "700"
-        }, String(Math.round(t))));
+          fill: "#556e85", "font-size": "14",
+          "text-anchor": "middle", "font-weight": "700"
+        }, String(Math.round(xVal))));
       }
 
       const step = majorStepY();
@@ -1136,16 +1261,23 @@
         UI.rightSvg.appendChild(S("text", {
           x: RIGHT.plotLeft - 16,
           y: chartYFromH(v) + 5,
-          fill: "#556e85",
-          "font-size": "15",
-          "text-anchor": "end",
-          "font-weight": "800"
+          fill: "#556e85", "font-size": "15",
+          "text-anchor": "end", "font-weight": "800"
         }, Number.isInteger(v) ? String(v) : v.toFixed(1)));
       }
 
-      if (state.history.length > 0 && UI.showLine.checked) {
-        const d = state.history.map((p, i) => {
-          const x = xFromT(p.t);
+      let series = state.history;
+      if (state.shape === "reconstruct") {
+        series = challengeFillHistory();
+      }
+
+      if (series.length > 0 && UI.showLine.checked) {
+        const d = series.map((p, i) => {
+          const xv = state.shape === "reconstruct"
+            ? (state.graphMode === "timeHeight" ? p.t : targetVolumeAtHeight(p.h))
+            : graphXValueFromPoint(p);
+
+          const x = graphXFromValue(xv);
           const y = chartYFromH(p.h);
           return `${i === 0 ? "M" : "L"} ${x} ${y}`;
         }).join(" ");
@@ -1153,17 +1285,17 @@
         UI.rightSvg.appendChild(S("path", {
           d,
           fill: "none",
-          stroke: "#2f87eb",
+          stroke: state.shape === "reconstruct" ? "#7c5cff" : "#2f87eb",
           "stroke-width": "4.2",
           "stroke-linecap": "round",
           "stroke-linejoin": "round"
         }));
       }
 
-      if (state.history.length > 0 && UI.showPoints.checked) {
-        state.history.forEach(p => {
+      if (series.length > 0 && UI.showPoints.checked && state.shape !== "reconstruct") {
+        series.forEach(p => {
           UI.rightSvg.appendChild(S("circle", {
-            cx: xFromT(p.t),
+            cx: graphXFromValue(graphXValueFromPoint(p)),
             cy: chartYFromH(p.h),
             r: "3.4",
             fill: "#2f87eb"
@@ -1171,36 +1303,30 @@
         });
       }
 
-      const last = state.history[state.history.length - 1];
+      const last = state.shape === "reconstruct" ? null : state.history[state.history.length - 1];
       if (last) {
-        const cx = xFromT(last.t);
+        const cx = graphXFromValue(graphXValueFromPoint(last));
         const cy = chartYFromH(last.h);
 
         if (UI.showGuides.checked) {
           UI.rightSvg.appendChild(S("line", {
-            x1: RIGHT.plotLeft,
-            x2: cx,
-            y1: cy,
-            y2: cy,
+            x1: RIGHT.plotLeft, x2: cx,
+            y1: cy, y2: cy,
             stroke: "rgba(47,135,235,.30)",
             "stroke-width": "2.1",
             "stroke-dasharray": "7 6"
           }));
 
           UI.rightSvg.appendChild(S("line", {
-            x1: cx,
-            x2: cx,
-            y1: cy,
-            y2: RIGHT.plotBottom,
+            x1: cx, x2: cx,
+            y1: cy, y2: RIGHT.plotBottom,
             stroke: "rgba(124,92,255,.28)",
             "stroke-width": "2.1",
             "stroke-dasharray": "7 6"
           }));
 
           UI.rightSvg.appendChild(S("circle", {
-            cx,
-            cy: RIGHT.plotBottom,
-            r: "4.4",
+            cx, cy: RIGHT.plotBottom, r: "4.4",
             fill: "#7c5cff"
           }));
         }
@@ -1234,7 +1360,9 @@
       const wrapRect = UI.topWrap.getBoundingClientRect();
       const rightSvgRect = UI.rightSvg.getBoundingClientRect();
 
-      const xSvg = xFromT(state.t);
+      const xSvg = graphXFromValue(
+        state.graphMode === "timeHeight" ? state.t : volumeAtHeight(state.h)
+      );
       const ySvg = chartYFromH(state.h);
 
       const x = rightSvgRect.left - wrapRect.left + (xSvg / RIGHT.svgW) * rightSvgRect.width;
@@ -1246,6 +1374,7 @@
     function drawOverlayGuide(){
       clear(UI.overlay);
       if (!UI.showGuides.checked) return;
+      if (state.shape === "reconstruct") return;
 
       const wrapRect = UI.topWrap.getBoundingClientRect();
       UI.overlay.setAttribute("width", wrapRect.width);
@@ -1258,10 +1387,8 @@
       const y = rightPt.y;
 
       UI.overlay.appendChild(S("line", {
-        x1: leftPt.x,
-        y1: y,
-        x2: rightPt.x,
-        y2: y,
+        x1: leftPt.x, y1: y,
+        x2: rightPt.x, y2: y,
         stroke: "rgba(47,135,235,.70)",
         "stroke-width": "2.7",
         "stroke-dasharray": "8 6",
@@ -1295,7 +1422,7 @@
       const rect = UI.drawCanvas.getBoundingClientRect();
       ctx.clearRect(0, 0, rect.width, rect.height);
 
-      if (state.shape !== "custom") return;
+      if (!isUserDrawMode()) return;
       if (state.customProfileReady) return;
 
       const drawLeft = 40;
@@ -1348,19 +1475,26 @@
     }
 
     function updateDrawUI(){
-      const show = state.shape === "custom";
+      const show = isUserDrawMode();
       UI.drawTools.classList.toggle("show", show);
       UI.drawCanvas.style.display = show ? "block" : "none";
       UI.drawCanvas.style.pointerEvents = show && state.draw.enabled && !state.customProfileReady ? "auto" : "none";
       UI.drawModeBtn.textContent = state.draw.enabled ? "Dibujando" : "Dibujar";
       UI.drawModeBtn.classList.toggle("primary", state.draw.enabled);
 
+      UI.fitDrawBtn.style.display = state.shape === "custom" ? "inline-block" : "none";
+      UI.compareBtn.style.display = state.shape === "reconstruct" ? "inline-block" : "none";
+      UI.showSolutionBtn.style.display = state.shape === "reconstruct" ? "inline-block" : "none";
+      UI.newChallengeBtn.style.display = state.shape === "reconstruct" ? "inline-block" : "none";
+
+      UI.controls.classList.toggle("hidden", state.shape === "reconstruct");
+
       if (show) resizeDrawCanvas();
       else redrawCanvas();
     }
 
     function enableDrawMode(){
-      if (state.shape !== "custom") return;
+      if (!isUserDrawMode()) return;
       if (state.customProfileReady) {
         state.customProfileReady = false;
         state.customRadiiBaseCm = [];
@@ -1381,14 +1515,15 @@
       state.customWidthCm = null;
       state.customBaseMaxRadiusCm = null;
       state.customVisualMaxRadiusCm = null;
+      if (state.shape === "reconstruct") state.challenge.score = null;
       redrawCanvas();
       refreshAll();
     }
 
-    function fitCustomVessel(){
+    function fitProfileFromDrawing(){
       if (state.draw.points.length < 12) {
-        alert("Dibuja primero la mitad derecha del vaso.");
-        return;
+        alert("Dibuja primero la mitad derecha del recipiente.");
+        return false;
       }
 
       const rect = UI.drawCanvas.getBoundingClientRect();
@@ -1407,8 +1542,8 @@
       );
 
       if (pts.length < 10) {
-        alert("Dibuja la mitad derecha del vaso dentro de la zona punteada.");
-        return;
+        alert("Dibuja dentro de la zona punteada.");
+        return false;
       }
 
       let minY = Infinity;
@@ -1422,8 +1557,8 @@
       }
 
       if (maxY - minY < 60) {
-        alert("El dibujo es demasiado pequeño. Haz el vaso más alto.");
-        return;
+        alert("El dibujo es demasiado pequeño.");
+        return false;
       }
 
       const bands = 160;
@@ -1440,9 +1575,7 @@
         }
 
         let maxX = -Infinity;
-        for (const p of bandPts) {
-          if (p.x > maxX) maxX = p.x;
-        }
+        for (const p of bandPts) if (p.x > maxX) maxX = p.x;
         halfWidthsPx.push(Math.max(6, maxX - axisX));
       }
 
@@ -1452,15 +1585,10 @@
           let r = i + 1;
           while (l >= 0 && halfWidthsPx[l] == null) l--;
           while (r < halfWidthsPx.length && halfWidthsPx[r] == null) r++;
-          if (l >= 0 && r < halfWidthsPx.length) {
-            halfWidthsPx[i] = (halfWidthsPx[l] + halfWidthsPx[r]) / 2;
-          } else if (l >= 0) {
-            halfWidthsPx[i] = halfWidthsPx[l];
-          } else if (r < halfWidthsPx.length) {
-            halfWidthsPx[i] = halfWidthsPx[r];
-          } else {
-            halfWidthsPx[i] = 12;
-          }
+          if (l >= 0 && r < halfWidthsPx.length) halfWidthsPx[i] = (halfWidthsPx[l] + halfWidthsPx[r]) / 2;
+          else if (l >= 0) halfWidthsPx[i] = halfWidthsPx[l];
+          else if (r < halfWidthsPx.length) halfWidthsPx[i] = halfWidthsPx[r];
+          else halfWidthsPx[i] = 12;
         }
       }
 
@@ -1486,8 +1614,6 @@
 
       state.customRadiiBaseCm = radiiCm.slice();
       state.customBaseMaxRadiusCm = Math.max(...radiiCm);
-
-      // Escala visual fija basada en el vaso ajustado inicialmente
       state.customVisualMaxRadiusCm = state.customBaseMaxRadiusCm * 1.1;
 
       state.width = clamp(state.customBaseMaxRadiusCm, 2.2, 5.5);
@@ -1499,7 +1625,6 @@
       state.draw.points = [];
       state.draw.enabled = false;
 
-      // fuerza inicio real en cero
       UI.initialHeight.value = "0";
       state.h0 = 0;
       state.h = 0;
@@ -1511,6 +1636,70 @@
       if (state.rafId) cancelAnimationFrame(state.rafId);
 
       updateDrawUI();
+      return true;
+    }
+
+    function fitCustomVessel(){
+      if (fitProfileFromDrawing()) {
+        refreshAll();
+      }
+    }
+
+    function compareChallenge(){
+      if (state.shape !== "reconstruct") return;
+      if (!fitProfileFromDrawing()) return;
+
+      const samples = 120;
+      let relErr = 0;
+
+      for (let i = 0; i <= samples; i++) {
+        const h = state.H * (i / samples);
+        const rUser = sampleShapeRadiusCm(h);
+        const rTrue = targetRadiusCm(h);
+        relErr += Math.abs(rUser - rTrue) / Math.max(rTrue, 0.25);
+      }
+
+      relErr /= (samples + 1);
+      state.challenge.score = Math.max(0, Math.round(100 - 65 * relErr));
+      refreshAll();
+    }
+
+    function toggleShowSolution(){
+      if (state.shape !== "reconstruct") return;
+      state.challenge.showSolution = !state.challenge.showSolution;
+      UI.showSolutionBtn.textContent = state.challenge.showSolution ? "Ocultar vaso correcto" : "Mostrar vaso correcto";
+      refreshAll();
+    }
+
+    function loadChallenge(idx = null){
+      if (idx == null) idx = Math.floor(Math.random() * CHALLENGES.length);
+      const ch = CHALLENGES[idx];
+
+      state.challenge.index = idx;
+      state.challenge.profile = ch.profile;
+      state.challenge.score = null;
+      state.challenge.showSolution = false;
+
+      state.H = ch.H;
+      state.width = ch.width;
+      UI.heightSlider.value = String(ch.H);
+      UI.widthSlider.value = String(ch.width);
+      UI.showSolutionBtn.textContent = "Mostrar vaso correcto";
+
+      state.h0 = 0;
+      state.h = 0;
+      state.t = 0;
+      state.history = [{ t: 0, h: 0 }];
+      state.customProfileReady = false;
+      state.customRadiiBaseCm = [];
+      state.customRadiiCm = [];
+      state.customWidthCm = null;
+      state.customBaseMaxRadiusCm = null;
+      state.customVisualMaxRadiusCm = null;
+      state.draw.points = [];
+      state.draw.enabled = true;
+
+      pauseSimulation();
       refreshAll();
     }
 
@@ -1522,18 +1711,13 @@
       UI.timeInfo.textContent = "Tiempo = " + state.t.toFixed(1) + " s";
       UI.heightInfo.textContent = "Altura = " + state.h.toFixed(1) + " cm";
 
-      if (state.shape === "cylinder") {
-        const k = state.Q / areaAtH(state.h);
-        UI.formulaInfo.textContent = `Modelo: h(t) ≈ ${state.h0.toFixed(1)} + ${k.toFixed(2)}·t`;
-      } else if (state.shape === "custom") {
-        UI.formulaInfo.textContent = state.customProfileReady
-          ? "Modelo: vaso ajustado desde el dibujo del estudiante"
-          : "Modelo: dibuja el vaso y presiona “Ajustar vaso”";
-      } else {
-        UI.formulaInfo.textContent = "Modelo: simulación numérica con caudal constante";
-      }
+      const showChallenge = state.shape === "reconstruct";
+      UI.challengeBox.classList.toggle("show", showChallenge);
 
-      UI.shapeNote.textContent = SHAPES[state.shape].note;
+      if (showChallenge) {
+        UI.challengeText.textContent = CHALLENGES[state.challenge.index].name;
+        UI.scoreText.textContent = state.challenge.score == null ? "" : `Puntaje: ${state.challenge.score}/100`;
+      }
     }
 
     function refreshAll(){
@@ -1550,17 +1734,18 @@
       state.h0 = Math.min(parseFloat(UI.initialHeight.value) || 0, state.H);
       state.Q = parseFloat(UI.flowSlider.value);
       state.animSpeed = parseFloat(UI.speedSlider.value);
+      state.graphMode = UI.graphMode.value;
 
-      if (state.shape === "custom" && state.customProfileReady) {
+      if ((state.shape === "custom" || state.shape === "reconstruct") && state.customProfileReady) {
         rebuildCustomProfileFromWidth();
       }
 
       UI.initialHeight.max = String(state.H);
 
-      if (!state.running && state.t === 0) {
+      if (!state.running && state.t === 0 && state.shape !== "reconstruct") {
         state.h = state.h0;
         state.history = [{ t: 0, h: state.h0 }];
-      } else {
+      } else if (state.shape !== "reconstruct") {
         state.h = Math.min(state.H, state.h);
         state.history = state.history.map(p => ({
           t: p.t,
@@ -1588,12 +1773,9 @@
 
       state.t += dt;
       state.h = nextHeight(state.h, dt);
-
       state.pointAccum += dt;
 
-      if (state.history.length === 0) {
-        state.history.push({ t: 0, h: state.h0 });
-      }
+      if (state.history.length === 0) state.history.push({ t: 0, h: state.h0 });
 
       if (state.pointAccum >= 0.06) {
         state.history.push({ t: state.t, h: state.h });
@@ -1615,17 +1797,10 @@
     }
 
     function startSimulation(){
+      if (state.shape === "reconstruct") return;
       if (state.shape === "custom" && !state.customProfileReady) {
-        alert("Primero dibuja la mitad del vaso y presiona “Ajustar vaso”.");
+        alert("Primero dibuja la mitad del recipiente y ajusta el perfil.");
         return;
-      }
-
-      // si está en actividad 5, forzar coherencia exacta con altura inicial
-      if (state.shape === "custom" && state.t === 0) {
-        state.h0 = Math.min(parseFloat(UI.initialHeight.value) || 0, state.H);
-        state.h = state.h0;
-        state.history = [{ t: 0, h: state.h0 }];
-        state.pointAccum = 0;
       }
 
       if (state.running) return;
@@ -1647,7 +1822,12 @@
       state.h = state.h0;
       state.history = [{ t: 0, h: state.h0 }];
       state.pointAccum = 0;
-      refreshAll();
+
+      if (state.shape === "reconstruct") {
+        loadChallenge(state.challenge.index);
+      } else {
+        refreshAll();
+      }
     }
 
     function setShape(shape){
@@ -1656,16 +1836,27 @@
         btn.classList.toggle("active", btn.dataset.shape === shape);
       });
 
+      if (shape === "reconstruct") {
+        loadChallenge();
+        return;
+      }
+
+      state.challenge.score = null;
+      state.challenge.profile = null;
+      state.challenge.showSolution = false;
+      UI.showSolutionBtn.textContent = "Mostrar vaso correcto";
+
       if (shape !== "custom") {
         state.draw.enabled = false;
+        state.customProfileReady = false;
       }
+
       resetSimulation();
     }
 
     function startDraw(evt){
-      if (state.shape !== "custom" || !state.draw.enabled || state.customProfileReady) return;
+      if (!isUserDrawMode() || !state.draw.enabled || state.customProfileReady) return;
       evt.preventDefault();
-
       state.draw.isDrawing = true;
       const p = canvasPointerPos(evt);
       state.draw.points.push(p);
@@ -1673,7 +1864,7 @@
     }
 
     function moveDraw(evt){
-      if (!state.draw.isDrawing || state.shape !== "custom" || !state.draw.enabled || state.customProfileReady) return;
+      if (!state.draw.isDrawing || !isUserDrawMode() || !state.draw.enabled || state.customProfileReady) return;
       evt.preventDefault();
 
       const p = canvasPointerPos(evt);
@@ -1700,6 +1891,7 @@
     UI.initialHeight.addEventListener("input", applyInputs);
     UI.flowSlider.addEventListener("input", applyInputs);
     UI.speedSlider.addEventListener("input", applyInputs);
+    UI.graphMode.addEventListener("change", applyInputs);
 
     UI.showPoints.addEventListener("change", refreshAll);
     UI.showLine.addEventListener("change", refreshAll);
@@ -1716,6 +1908,9 @@
     UI.drawModeBtn.addEventListener("click", enableDrawMode);
     UI.clearDrawBtn.addEventListener("click", clearDrawing);
     UI.fitDrawBtn.addEventListener("click", fitCustomVessel);
+    UI.compareBtn.addEventListener("click", compareChallenge);
+    UI.showSolutionBtn.addEventListener("click", toggleShowSolution);
+    UI.newChallengeBtn.addEventListener("click", () => loadChallenge());
 
     window.addEventListener("resize", () => {
       resizeDrawCanvas();
