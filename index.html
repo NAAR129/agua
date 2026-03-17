@@ -244,6 +244,11 @@
       color:var(--muted);
       font-weight:900;
       font-size:15px;
+      min-height:22px;
+    }
+
+    .value.hiddenValue{
+      visibility:hidden;
     }
 
     input[type="range"]{
@@ -315,6 +320,7 @@
       font-size:17px;
       color:var(--blue-4);
       font-weight:900;
+      min-height:24px;
     }
 
     .info2{
@@ -322,6 +328,7 @@
       font-size:19px;
       font-weight:900;
       color:var(--title);
+      min-height:28px;
     }
 
     .challengeBox{
@@ -333,6 +340,7 @@
       color:#294d70;
       font-weight:800;
       display:none;
+      min-height:96px;
     }
 
     .challengeBox.show{
@@ -344,6 +352,7 @@
       font-size:19px;
       font-weight:900;
       color:var(--green);
+      min-height:24px;
     }
 
     .footerAuthor{
@@ -397,7 +406,7 @@
             <button class="miniBtn warn" id="clearDrawBtn">Borrar</button>
             <button class="miniBtn primary" id="fitDrawBtn">Ajustar recipiente</button>
             <button class="miniBtn success" id="compareBtn">Comparar</button>
-            <button class="miniBtn primary" id="showSolutionBtn">Mostrar vaso correcto</button>
+            <button class="miniBtn primary" id="showSolutionBtn">Mostrar recipiente correcto</button>
             <button class="miniBtn primary" id="newChallengeBtn">Nuevo reto</button>
           </div>
           <div class="panelInner">
@@ -418,7 +427,7 @@
     <div class="controls" id="controls">
       <div class="controlBlock">
         <div class="row">
-          <label for="widthSlider">Ancho característico del recipiente</label>
+          <label for="widthSlider">Radio del recipiente</label>
           <input id="widthSlider" type="range" min="2.2" max="5.5" step="0.1" value="3.0">
           <span class="value" id="widthValue">3.0 cm</span>
         </div>
@@ -432,14 +441,14 @@
         <div class="row">
           <label for="initialHeight">Altura inicial</label>
           <input id="initialHeight" type="number" min="0" max="18" step="0.1" value="0">
-          <span class="value">cm</span>
+          <span class="value" id="initialHeightUnit">cm</span>
         </div>
 
-        <div class="info" id="timeInfo">Tiempo = 0.0 s</div>
-        <div class="info2" id="heightInfo">Altura = 0.0 cm</div>
+        <div class="info" id="timeInfo"></div>
+        <div class="info2" id="heightInfo"></div>
 
         <div class="challengeBox" id="challengeBox">
-          <div id="challengeText">Reto activo</div>
+          <div id="challengeText"></div>
           <div class="score" id="scoreText"></div>
         </div>
       </div>
@@ -452,7 +461,7 @@
         </div>
 
         <div class="row">
-          <label for="flowSlider">Caudal constante Q</label>
+          <label for="flowSlider">Caudal Q</label>
           <input id="flowSlider" type="range" min="1" max="100" step="1" value="10">
           <span class="value" id="flowValue">10 mL/s</span>
         </div>
@@ -464,17 +473,18 @@
         </div>
 
         <div class="row">
-          <label for="graphMode">Modo de gráfico</label>
+          <label for="graphMode">Representación en el gráfico</label>
           <select id="graphMode">
-            <option value="timeHeight">Altura vs tiempo</option>
-            <option value="volumeHeight">Contenido vs altura</option>
+            <option value="timeHeight">Altura del agua y tiempo</option>
+            <option value="volumeHeight">Contenido y altura</option>
           </select>
         </div>
 
         <div class="checks">
           <label><input id="showPoints" type="checkbox" checked> Puntos</label>
-          <label><input id="showLine" type="checkbox" checked> Gráfico</label>
-          <label><input id="showGuides" type="checkbox" checked> Proyecciones</label>
+          <label><input id="showLine" type="checkbox" checked> Curva</label>
+          <label><input id="showGuides" type="checkbox" checked> Líneas guía</label>
+          <label><input id="showNumbers" type="checkbox"> Mostrar valores</label>
         </div>
       </div>
     </div>
@@ -526,32 +536,78 @@
     };
 
     const CHALLENGES = [
+      { name: "", H: 10.5, width: 3.1, profile(h, H, w){ return w; } },
       {
-        name: "Reto 1",
-        H: 10.5,
-        width: 3.1,
+        name: "", H: 10.5, width: 3.1,
         profile(h, H, w){
-          const u = h / H;
+          const u = h / Math.max(H, 0.0001);
           return w * (0.20 + 0.80 * u);
         }
       },
       {
-        name: "Reto 2",
-        H: 10.5,
-        width: 3.3,
+        name: "", H: 10.5, width: 3.3,
         profile(h, H, w){
-          const u = h / H;
+          const u = h / Math.max(H, 0.0001);
           return w * (1.00 - 0.42 * u);
         }
       },
       {
-        name: "Reto 3",
-        H: 10.5,
-        width: 3.0,
+        name: "", H: 10.5, width: 3.0,
         profile(h, H, w){
-          const u = h / H;
+          const u = h / Math.max(H, 0.0001);
           const bulb = 0.36 + 0.78 * Math.sin(Math.PI * u) ** 0.95;
           return w * Math.max(0.22, bulb);
+        }
+      },
+      {
+        name: "", H: 10.5, width: 3.0,
+        profile(h, H, w){
+          const u = h / Math.max(H, 0.0001);
+          const neck = 0.55 + 0.30 * Math.sin(Math.PI * u) - 0.22 * u;
+          return w * Math.max(0.18, neck);
+        }
+      },
+      {
+        name: "", H: 10.5, width: 3.2,
+        profile(h, H, w){
+          const u = h / Math.max(H, 0.0001);
+          const belly = 0.30 + 0.95 * Math.sin(Math.PI * u) ** 1.4;
+          const topTaper = 1.00 - 0.28 * u;
+          return w * Math.max(0.18, belly * topTaper);
+        }
+      },
+      {
+        name: "", H: 10.5, width: 3.3,
+        profile(h, H, w){
+          const u = h / Math.max(H, 0.0001);
+          if (u < 0.30) return w * (1.10 - 0.15 * (u / 0.30));
+          if (u < 0.75) return w * 0.95;
+          return w * (0.95 - 0.45 * ((u - 0.75) / 0.25));
+        }
+      },
+      {
+        name: "", H: 10.5, width: 3.0,
+        profile(h, H, w){
+          const u = h / Math.max(H, 0.0001);
+          const waist = 0.95 - 0.48 * Math.sin(Math.PI * u) ** 2;
+          return w * Math.max(0.22, waist);
+        }
+      },
+      {
+        name: "", H: 10.5, width: 3.1,
+        profile(h, H, w){
+          const u = h / Math.max(H, 0.0001);
+          if (u < 0.45) return w * (0.55 + 0.10 * (u / 0.45));
+          return w * (0.65 + 0.55 * ((u - 0.45) / 0.55));
+        }
+      },
+      {
+        name: "", H: 10.5, width: 3.1,
+        profile(h, H, w){
+          const u = h / Math.max(H, 0.0001);
+          const baseCurve = 0.22 + 0.95 * Math.sqrt(u);
+          const topSoft = 1.00 - 0.10 * u;
+          return w * Math.max(0.18, baseCurve * topSoft);
         }
       }
     ];
@@ -571,6 +627,7 @@
       rafId: null,
       lastTs: null,
       pointAccum: 0,
+      showNumbers: false,
 
       customProfileReady: false,
       customRadiiBaseCm: [],
@@ -621,6 +678,7 @@
       heightMaxValue: document.getElementById("heightMaxValue"),
       flowValue: document.getElementById("flowValue"),
       speedValue: document.getElementById("speedValue"),
+      initialHeightUnit: document.getElementById("initialHeightUnit"),
 
       timeInfo: document.getElementById("timeInfo"),
       heightInfo: document.getElementById("heightInfo"),
@@ -632,6 +690,7 @@
       showPoints: document.getElementById("showPoints"),
       showLine: document.getElementById("showLine"),
       showGuides: document.getElementById("showGuides"),
+      showNumbers: document.getElementById("showNumbers"),
 
       startBtn: document.getElementById("startBtn"),
       pauseBtn: document.getElementById("pauseBtn"),
@@ -674,6 +733,12 @@
 
     function clamp(v, a, b){
       return Math.max(a, Math.min(b, v));
+    }
+
+    function formatSmart(v){
+      if (Math.abs(v) >= 100) return v.toFixed(1);
+      if (Math.abs(v) >= 10) return v.toFixed(1);
+      return v.toFixed(2);
     }
 
     function smoothArray(arr, passes = 3){
@@ -757,28 +822,24 @@
       return Math.PI * r * r;
     }
 
-    function volumeAtHeight(h){
+    function integrateVolumeUntilHeight(h, areaFn){
       if (h <= 0) return 0;
-      const steps = 220;
+      const steps = 2400;
       const dh = h / steps;
       let volume = 0;
       for (let i = 0; i < steps; i++) {
         const hMid = (i + 0.5) * dh;
-        volume += areaAtH(hMid) * dh;
+        volume += areaFn(hMid) * dh;
       }
       return volume;
     }
 
+    function volumeAtHeight(h){
+      return integrateVolumeUntilHeight(h, areaAtH);
+    }
+
     function targetVolumeAtHeight(h){
-      if (h <= 0) return 0;
-      const steps = 220;
-      const dh = h / steps;
-      let volume = 0;
-      for (let i = 0; i < steps; i++) {
-        const hMid = (i + 0.5) * dh;
-        volume += targetAreaAtH(hMid) * dh;
-      }
-      return volume;
+      return integrateVolumeUntilHeight(h, targetAreaAtH);
     }
 
     function totalVolume(){
@@ -790,7 +851,11 @@
     }
 
     function estimateFillTime(){
-      return Math.max(4, (totalVolume() - volumeAtHeight(state.h0)) / Math.max(state.Q, 0.0001));
+      return Math.max(0, (totalVolume() - volumeAtHeight(state.h0)) / Math.max(state.Q, 0.0001));
+    }
+
+    function targetEstimateFillTime(){
+      return Math.max(0, targetTotalVolume() / Math.max(state.Q, 0.0001));
     }
 
     function challengeFillHistory(){
@@ -798,34 +863,49 @@
       const history = [];
       let t = 0;
       let h = 0;
-      const dt = 0.05;
+      const dt = 0.01;
       history.push({ t:0, h:0 });
-      while (h < state.H - 1e-6 && t < 200) {
-        const A = targetAreaAtH(h);
-        h = Math.min(state.H, h + (state.Q / Math.max(A, 0.02)) * dt);
-        t += dt;
+
+      while (h < state.H - 1e-8 && t < 400) {
+        for (let i = 0; i < 8; i++) {
+          const A = targetAreaAtH(h);
+          h = Math.min(state.H, h + (state.Q / Math.max(A, 0.0001)) * (dt / 8));
+          t += dt / 8;
+        }
         history.push({ t, h });
       }
       return history;
     }
 
-    function graphXMax(){
-      if (state.shape === "reconstruct") {
-        const hist = challengeFillHistory();
-        if (state.graphMode === "timeHeight") {
-          return Math.max(12, Math.ceil((hist[hist.length - 1]?.t || 12) * 1.12));
-        }
-        return Math.max(50, Math.ceil(targetTotalVolume() * 1.12));
-      }
+    function timeAxisMaxExact(){
+      if (state.shape === "reconstruct") return Math.max(targetEstimateFillTime(), 1);
+      return Math.max(estimateFillTime(), 1);
+    }
 
-      if (state.graphMode === "timeHeight") {
-        return Math.max(12, Math.min(120, Math.ceil(estimateFillTime() * 1.20)));
-      }
-      return Math.max(50, Math.ceil(totalVolume() * 1.12));
+    function volumeAxisMaxExact(){
+      if (state.shape === "reconstruct") return Math.max(targetTotalVolume(), 1);
+      return Math.max(totalVolume(), 1);
+    }
+
+    function nextMultiple(value, step){
+      return Math.max(step, Math.ceil(value / step) * step);
+    }
+
+    function graphXMax(){
+      if (state.graphMode === "timeHeight") return nextMultiple(timeAxisMaxExact(), 1);
+      return nextMultiple(volumeAxisMaxExact(), 50);
+    }
+
+    function getXTicks(){
+      const xMax = graphXMax();
+      const step = state.graphMode === "timeHeight" ? 1 : 50;
+      const ticks = [];
+      for (let v = 0; v <= xMax + 1e-9; v += step) ticks.push(v);
+      return ticks;
     }
 
     function graphXFromValue(xValue){
-      const xMax = graphXMax();
+      const xMax = Math.max(graphXMax(), 0.0001);
       const usable = RIGHT.svgW - RIGHT.plotLeft - RIGHT.plotRight;
       return RIGHT.plotLeft + (xValue / xMax) * usable;
     }
@@ -851,7 +931,7 @@
       return targetRadiusCm(h) / maxCm * maxPx;
     }
 
-    function pointsForWall(samples = 64){
+    function pointsForWall(samples = 80){
       const left = [];
       const right = [];
       for (let i = 0; i <= samples; i++) {
@@ -864,7 +944,7 @@
       return { left, right };
     }
 
-    function pointsForTargetWall(samples = 64){
+    function pointsForTargetWall(samples = 80){
       const left = [];
       const right = [];
       for (let i = 0; i <= samples; i++) {
@@ -880,17 +960,13 @@
     function pathFromPoints(leftPts, rightPts){
       const all = [];
       all.push(`M ${leftPts[leftPts.length - 1][0]} ${leftPts[leftPts.length - 1][1]}`);
-      for (let i = leftPts.length - 2; i >= 0; i--) {
-        all.push(`L ${leftPts[i][0]} ${leftPts[i][1]}`);
-      }
-      for (let i = 0; i < rightPts.length; i++) {
-        all.push(`L ${rightPts[i][0]} ${rightPts[i][1]}`);
-      }
+      for (let i = leftPts.length - 2; i >= 0; i--) all.push(`L ${leftPts[i][0]} ${leftPts[i][1]}`);
+      for (let i = 0; i < rightPts.length; i++) all.push(`L ${rightPts[i][0]} ${rightPts[i][1]}`);
       all.push("Z");
       return all.join(" ");
     }
 
-    function waterPolygonUpToHeight(hFill, samples = 60){
+    function waterPolygonUpToHeight(hFill, samples = 80){
       const left = [];
       const right = [];
       for (let i = 0; i <= samples; i++) {
@@ -996,7 +1072,7 @@
           "stroke-linecap": "round"
         }));
 
-        if (isMajor) {
+        if (isMajor && state.showNumbers) {
           svg.appendChild(S("text", {
             x: x + 49, y: y + 5,
             fill: "#334b61", "font-size": "16",
@@ -1007,6 +1083,8 @@
     }
 
     function drawHeightChip(svg){
+      if (!state.showNumbers) return;
+
       const y = 602;
       const x = 112;
       const text = `h = ${state.h.toFixed(1)} cm`;
@@ -1035,7 +1113,7 @@
       }));
 
       UI.leftSvg.appendChild(S("rect", {
-        x: 34, y: 74, width: 270, height: 84, rx: 16,
+        x: 34, y: 74, width: 300, height: 84, rx: 16,
         fill: "rgba(255,255,255,.82)",
         stroke: "#dbe7f5", "stroke-width": "1.2"
       }));
@@ -1043,7 +1121,7 @@
       UI.leftSvg.appendChild(S("text", {
         x: 48, y: 100, fill: "#58718b",
         "font-size": "14", "font-weight": "800"
-      }, "Observa la gráfica objetivo de la derecha."));
+      }, "Observa a la derecha el gráfico objetivo."));
 
       UI.leftSvg.appendChild(S("text", {
         x: 48, y: 121, fill: "#58718b",
@@ -1068,7 +1146,7 @@
       }));
 
       UI.leftSvg.appendChild(S("rect", {
-        x: 34, y: 74, width: 260, height: 70, rx: 16,
+        x: 34, y: 74, width: 290, height: 70, rx: 16,
         fill: "rgba(255,255,255,.82)",
         stroke: "#dbe7f5", "stroke-width": "1.2"
       }));
@@ -1083,7 +1161,7 @@
         x: 48, y: 121,
         fill: "#6d5ef5", "font-size": "13",
         "font-weight": "900"
-      }, "Luego presiona “Ajustar recipiente”."));
+      }, "Luego pulsa “Ajustar recipiente”."));
     }
 
     function drawCorrectTargetOutline(svg){
@@ -1184,24 +1262,57 @@
     }
 
     function drawGrid(){
-      const xMax = graphXMax();
+      const xTicks = getXTicks();
 
-      for (let i = 0; i <= 10; i++) {
-        const xVal = (i / 10) * xMax;
+      xTicks.forEach(xVal => {
         UI.rightSvg.appendChild(S("line", {
           x1: graphXFromValue(xVal), x2: graphXFromValue(xVal),
           y1: RIGHT.plotTop, y2: RIGHT.plotBottom,
           stroke: "rgba(75,105,140,.10)", "stroke-width": "1"
         }));
-      }
+      });
 
-      for (let v = 0; v <= state.H + 0.0001; v += 1) {
+      for (let v = 0; v <= state.H + 0.0001; v += state.H / 10) {
         UI.rightSvg.appendChild(S("line", {
           x1: RIGHT.plotLeft, x2: RIGHT.svgW - RIGHT.plotRight,
           y1: chartYFromH(v), y2: chartYFromH(v),
           stroke: "rgba(75,105,140,.10)", "stroke-width": "1"
         }));
       }
+    }
+
+    function drawPointCoordinates(cx, cy, xValue, yValue){
+      if (!state.showNumbers) return;
+      if (state.running) return;
+
+      const text = `(${formatSmart(xValue)}, ${formatSmart(yValue)})`;
+      const boxWidth = Math.max(120, 12 + text.length * 7.2);
+      const boxHeight = 34;
+
+      let boxX = cx + 12;
+      let boxY = cy - 42;
+
+      if (boxX + boxWidth > RIGHT.svgW - RIGHT.plotRight) boxX = cx - boxWidth - 12;
+      if (boxY < RIGHT.plotTop) boxY = cy + 12;
+
+      UI.rightSvg.appendChild(S("rect", {
+        x: boxX,
+        y: boxY,
+        width: boxWidth,
+        height: boxHeight,
+        rx: 10,
+        fill: "rgba(255,255,255,.97)",
+        stroke: "#cfe0f2",
+        "stroke-width": "1.2"
+      }));
+
+      UI.rightSvg.appendChild(S("text", {
+        x: boxX + 10,
+        y: boxY + 22,
+        fill: "#23476b",
+        "font-size": "13",
+        "font-weight": "800"
+      }, text));
     }
 
     function drawRight(){
@@ -1215,8 +1326,6 @@
         rx: 22, fill: "url(#graphCardFill)",
         stroke: "#dbe7f1", "stroke-width": "1.2"
       }));
-
-      const xMax = graphXMax();
 
       if (UI.showGuides.checked) drawGrid();
 
@@ -1246,24 +1355,26 @@
         "font-weight": "900", "text-anchor": "end"
       }, xAxisLabel));
 
-      for (let i = 0; i <= 10; i++) {
-        const xVal = (i / 10) * xMax;
-        UI.rightSvg.appendChild(S("text", {
-          x: graphXFromValue(xVal),
-          y: RIGHT.plotBottom + 30,
-          fill: "#556e85", "font-size": "14",
-          "text-anchor": "middle", "font-weight": "700"
-        }, String(Math.round(xVal))));
-      }
+      if (state.showNumbers) {
+        const xTicks = getXTicks();
+        xTicks.forEach(xVal => {
+          UI.rightSvg.appendChild(S("text", {
+            x: graphXFromValue(xVal),
+            y: RIGHT.plotBottom + 30,
+            fill: "#556e85", "font-size": "14",
+            "text-anchor": "middle", "font-weight": "700"
+          }, String(xVal)));
+        });
 
-      const step = majorStepY();
-      for (let v = 0; v <= state.H + 0.0001; v += step) {
-        UI.rightSvg.appendChild(S("text", {
-          x: RIGHT.plotLeft - 16,
-          y: chartYFromH(v) + 5,
-          fill: "#556e85", "font-size": "15",
-          "text-anchor": "end", "font-weight": "800"
-        }, Number.isInteger(v) ? String(v) : v.toFixed(1)));
+        const yStep = majorStepY();
+        for (let v = 0; v <= state.H + 0.0001; v += yStep) {
+          UI.rightSvg.appendChild(S("text", {
+            x: RIGHT.plotLeft - 16,
+            y: chartYFromH(v) + 5,
+            fill: "#556e85", "font-size": "15",
+            "text-anchor": "end", "font-weight": "800"
+          }, Number.isInteger(v) ? String(v) : v.toFixed(1)));
+        }
       }
 
       let series = state.history;
@@ -1297,7 +1408,7 @@
           UI.rightSvg.appendChild(S("circle", {
             cx: graphXFromValue(graphXValueFromPoint(p)),
             cy: chartYFromH(p.h),
-            r: "3.4",
+            r: "3.2",
             fill: "#2f87eb"
           }));
         });
@@ -1305,8 +1416,10 @@
 
       const last = state.shape === "reconstruct" ? null : state.history[state.history.length - 1];
       if (last) {
-        const cx = graphXFromValue(graphXValueFromPoint(last));
-        const cy = chartYFromH(last.h);
+        const xValue = graphXValueFromPoint(last);
+        const yValue = last.h;
+        const cx = graphXFromValue(xValue);
+        const cy = chartYFromH(yValue);
 
         if (UI.showGuides.checked) {
           UI.rightSvg.appendChild(S("line", {
@@ -1340,6 +1453,8 @@
           cx, cy, r: "5.4",
           fill: "#2f87eb"
         }));
+
+        drawPointCoordinates(cx, cy, xValue, yValue);
       }
     }
 
@@ -1474,12 +1589,16 @@
       }
     }
 
+    function toggleValueVisibility(el, show){
+      el.classList.toggle("hiddenValue", !show);
+    }
+
     function updateDrawUI(){
       const show = isUserDrawMode();
       UI.drawTools.classList.toggle("show", show);
       UI.drawCanvas.style.display = show ? "block" : "none";
       UI.drawCanvas.style.pointerEvents = show && state.draw.enabled && !state.customProfileReady ? "auto" : "none";
-      UI.drawModeBtn.textContent = state.draw.enabled ? "Dibujando" : "Dibujar";
+      UI.drawModeBtn.textContent = state.draw.enabled ? "Dibujo activo" : "Dibujar";
       UI.drawModeBtn.classList.toggle("primary", state.draw.enabled);
 
       UI.fitDrawBtn.style.display = state.shape === "custom" ? "inline-block" : "none";
@@ -1487,7 +1606,7 @@
       UI.showSolutionBtn.style.display = state.shape === "reconstruct" ? "inline-block" : "none";
       UI.newChallengeBtn.style.display = state.shape === "reconstruct" ? "inline-block" : "none";
 
-      UI.controls.classList.toggle("hidden", state.shape === "reconstruct");
+      UI.controls.classList.toggle("hidden", false);
 
       if (show) resizeDrawCanvas();
       else redrawCanvas();
@@ -1542,7 +1661,7 @@
       );
 
       if (pts.length < 10) {
-        alert("Dibuja dentro de la zona punteada.");
+        alert("Por favor, dibuja dentro de la zona punteada.");
         return false;
       }
 
@@ -1557,11 +1676,11 @@
       }
 
       if (maxY - minY < 60) {
-        alert("El dibujo es demasiado pequeño.");
+        alert("Tu dibujo es demasiado pequeño.");
         return false;
       }
 
-      const bands = 160;
+      const bands = 180;
       const halfWidthsPx = [];
 
       for (let i = 0; i < bands; i++) {
@@ -1649,7 +1768,7 @@
       if (state.shape !== "reconstruct") return;
       if (!fitProfileFromDrawing()) return;
 
-      const samples = 120;
+      const samples = 160;
       let relErr = 0;
 
       for (let i = 0; i <= samples; i++) {
@@ -1667,7 +1786,7 @@
     function toggleShowSolution(){
       if (state.shape !== "reconstruct") return;
       state.challenge.showSolution = !state.challenge.showSolution;
-      UI.showSolutionBtn.textContent = state.challenge.showSolution ? "Ocultar vaso correcto" : "Mostrar vaso correcto";
+      UI.showSolutionBtn.textContent = state.challenge.showSolution ? "Ocultar recipiente correcto" : "Mostrar recipiente correcto";
       refreshAll();
     }
 
@@ -1684,7 +1803,7 @@
       state.width = ch.width;
       UI.heightSlider.value = String(ch.H);
       UI.widthSlider.value = String(ch.width);
-      UI.showSolutionBtn.textContent = "Mostrar vaso correcto";
+      UI.showSolutionBtn.textContent = "Mostrar recipiente correcto";
 
       state.h0 = 0;
       state.h = 0;
@@ -1708,15 +1827,26 @@
       UI.heightMaxValue.textContent = state.H.toFixed(1) + " cm";
       UI.flowValue.textContent = state.Q.toFixed(0) + " mL/s";
       UI.speedValue.textContent = state.animSpeed.toFixed(2) + "×";
-      UI.timeInfo.textContent = "Tiempo = " + state.t.toFixed(1) + " s";
-      UI.heightInfo.textContent = "Altura = " + state.h.toFixed(1) + " cm";
+      UI.timeInfo.textContent = state.showNumbers ? "Tiempo = " + state.t.toFixed(2) + " s" : "";
+      UI.heightInfo.textContent = state.showNumbers ? "Altura del agua = " + state.h.toFixed(2) + " cm" : "";
+
+      toggleValueVisibility(UI.widthValue, state.showNumbers);
+      toggleValueVisibility(UI.heightMaxValue, state.showNumbers);
+      toggleValueVisibility(UI.flowValue, state.showNumbers);
+      toggleValueVisibility(UI.speedValue, state.showNumbers);
+      toggleValueVisibility(UI.initialHeightUnit, state.showNumbers);
 
       const showChallenge = state.shape === "reconstruct";
       UI.challengeBox.classList.toggle("show", showChallenge);
 
       if (showChallenge) {
-        UI.challengeText.textContent = CHALLENGES[state.challenge.index].name;
-        UI.scoreText.textContent = state.challenge.score == null ? "" : `Puntaje: ${state.challenge.score}/100`;
+        UI.challengeText.textContent = "";
+        UI.scoreText.textContent = state.showNumbers && state.challenge.score != null
+          ? `Puntaje: ${state.challenge.score}/100`
+          : "";
+      } else {
+        UI.challengeText.textContent = "";
+        UI.scoreText.textContent = "";
       }
     }
 
@@ -1735,6 +1865,7 @@
       state.Q = parseFloat(UI.flowSlider.value);
       state.animSpeed = parseFloat(UI.speedSlider.value);
       state.graphMode = UI.graphMode.value;
+      state.showNumbers = UI.showNumbers.checked;
 
       if ((state.shape === "custom" || state.shape === "reconstruct") && state.customProfileReady) {
         rebuildCustomProfileFromWidth();
@@ -1756,35 +1887,40 @@
       refreshAll();
     }
 
-    function nextHeight(h, dt){
-      const A = areaAtH(h);
-      const dh = (state.Q / Math.max(A, 0.02)) * dt;
-      return Math.min(state.H, h + dh);
+    function integrateHeightStep(dtTotal){
+      const substeps = 12;
+      const dt = dtTotal / substeps;
+
+      for (let i = 0; i < substeps; i++) {
+        const A = areaAtH(state.h);
+        const dh = (state.Q / Math.max(A, 0.0001)) * dt;
+        state.h = Math.min(state.H, state.h + dh);
+        state.t += dt;
+      }
     }
 
     function animationLoop(ts){
       if (!state.running) return;
 
       if (state.lastTs == null) state.lastTs = ts;
-      const realDt = Math.min(0.04, (ts - state.lastTs) / 1000);
+      const realDt = Math.min(0.035, (ts - state.lastTs) / 1000);
       state.lastTs = ts;
 
       const dt = realDt * state.animSpeed;
 
-      state.t += dt;
-      state.h = nextHeight(state.h, dt);
+      integrateHeightStep(dt);
       state.pointAccum += dt;
 
       if (state.history.length === 0) state.history.push({ t: 0, h: state.h0 });
 
-      if (state.pointAccum >= 0.06) {
+      if (state.pointAccum >= 0.05) {
         state.history.push({ t: state.t, h: state.h });
         state.pointAccum = 0;
       } else {
         state.history[state.history.length - 1] = { t: state.t, h: state.h };
       }
 
-      if (state.h >= state.H) {
+      if (state.h >= state.H - 1e-8) {
         state.h = state.H;
         state.running = false;
         state.lastTs = null;
@@ -1799,7 +1935,7 @@
     function startSimulation(){
       if (state.shape === "reconstruct") return;
       if (state.shape === "custom" && !state.customProfileReady) {
-        alert("Primero dibuja la mitad del recipiente y ajusta el perfil.");
+        alert("Primero dibuja la mitad del recipiente y luego ajusta el perfil.");
         return;
       }
 
@@ -1813,6 +1949,7 @@
       state.running = false;
       state.lastTs = null;
       if (state.rafId) cancelAnimationFrame(state.rafId);
+      refreshAll();
     }
 
     function resetSimulation(){
@@ -1844,11 +1981,16 @@
       state.challenge.score = null;
       state.challenge.profile = null;
       state.challenge.showSolution = false;
-      UI.showSolutionBtn.textContent = "Mostrar vaso correcto";
+      UI.showSolutionBtn.textContent = "Mostrar recipiente correcto";
 
       if (shape !== "custom") {
         state.draw.enabled = false;
         state.customProfileReady = false;
+        state.customRadiiBaseCm = [];
+        state.customRadiiCm = [];
+        state.customWidthCm = null;
+        state.customBaseMaxRadiusCm = null;
+        state.customVisualMaxRadiusCm = null;
       }
 
       resetSimulation();
@@ -1896,6 +2038,7 @@
     UI.showPoints.addEventListener("change", refreshAll);
     UI.showLine.addEventListener("change", refreshAll);
     UI.showGuides.addEventListener("change", refreshAll);
+    UI.showNumbers.addEventListener("change", applyInputs);
 
     UI.startBtn.addEventListener("click", startSimulation);
     UI.pauseBtn.addEventListener("click", pauseSimulation);
